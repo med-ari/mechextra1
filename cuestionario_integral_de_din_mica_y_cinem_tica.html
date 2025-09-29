@@ -1,0 +1,1031 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuestionario Integral de Dinámica y Cinemática</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']],
+          processEscapes: true
+        },
+        svg: {
+          fontCache: 'global'
+        },
+        chtml: {
+          displayAlign: 'left'
+        }
+      };
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #4f46e5; --primary-dark: #4338ca; --primary-light: #eef2ff;
+            --secondary-color: #64748b; --success-color: #10b981; --success-light: #ecfdf5;
+            --danger-color: #ef4444; --danger-light: #fef2f2; --warning-color: #f59e0b;
+            --light-bg: #f1f5f9; --border-color: #cbd5e1; --text-color: #1e293b;
+            --white: #ffffff; --progress-color-start: #4f46e5; --progress-color-end: #10b981;
+        }
+        @keyframes moveGradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        body {
+            font-family: 'Inter', sans-serif; display: flex; justify-content: center;
+            align-items: flex-start; min-height: 100vh;
+            background: linear-gradient(-45deg, #6d28d9, #4f46e5, #d946ef, #10b981);
+            background-size: 400% 400%; animation: moveGradient 20s ease infinite;
+            margin: 0; padding: 2em 1em;
+        }
+        .main-wrapper { width: 100%; max-width: 900px; position: relative; }
+        .card { background: var(--white); padding: 2.5em; border-radius: 16px; box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15); animation: fadeIn 0.5s ease-out; }
+        .hidden { display: none; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideDownFade { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        #category-selection-screen h2 { font-size: 2em; color: var(--primary-color); text-align: center; margin-top: 0; margin-bottom: 0.5em; }
+        #category-selection-screen .subtitle { text-align: center; color: var(--secondary-color); margin-bottom: 2em; font-size: 1.1em; max-width: 600px; margin-left: auto; margin-right: auto; line-height: 1.6; }
+        #category-list { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5em; margin-bottom: 2.5em; }
+        .category-item { background-color: var(--white); border: 2px solid var(--border-color); border-radius: 12px; padding: 1.5em; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; }
+        .category-item:hover:not(.completed) { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(79,70,229,0.1); border-color: var(--primary-color); }
+        .category-item h3 { margin: 0 0 0.5em 0; color: var(--primary-dark); font-size: 1.25em; }
+        .category-item p { margin: 0; color: var(--secondary-color); font-size: 0.95em; line-height: 1.5; }
+        .category-item.completed { border-color: var(--success-color); background-color: var(--success-light); cursor: default; }
+        .category-item.completed:hover { transform: none; box-shadow: none; }
+        .category-item.completed::before { content: '✔'; font-weight: bold; position: absolute; top: 1em; right: 1.2em; color: var(--success-color); font-size: 1.5em; }
+        .category-item .progress-info { margin-top: 1em; font-weight: bold; color: var(--success-color); }
+        #overall-progress-container { margin-top: 2em; text-align: center; border-top: 1px solid var(--border-color); padding-top: 2em;}
+        #overall-progress-container h3 { margin: 0 0 0.5em 0; color: var(--text-color); }
+        #overall-score { font-size: 1.2em; color: var(--secondary-color); }
+        #show-final-results-btn { padding: 12px 30px; font-size: 1em; font-weight: bold; color: var(--white); background-color: var(--success-color); border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s; margin-top: 1em; }
+        #show-final-results-btn:hover { background-color: #059669; }
+
+        /* --- New Summary Card Styles --- */
+        #summary-container h2 { font-size: 1.8em; margin-top: 0; margin-bottom: 0.2em; color: var(--primary-color); }
+        #summary-container .subtitle { color: var(--secondary-color); margin-top: 0; margin-bottom: 2em; }
+        .summary-section { margin-bottom: 2.5em; }
+        .summary-section h3 { font-size: 1.2em; font-weight: 700; color: var(--text-color); margin-bottom: 1em; padding-bottom: 0.5em; border-bottom: 2px solid var(--primary-light); display: flex; align-items: center; gap: 0.75em; }
+        .summary-key-concepts { line-height: 1.7; color: #374151; }
+        .summary-key-concepts p, .summary-key-concepts ul, .summary-key-concepts ol { margin-bottom: 1em; }
+        .summary-key-concepts ul, .summary-key-concepts ol { padding-left: 20px; }
+        .summary-key-concepts strong { color: var(--primary-dark); }
+        .summary-key-concepts mjx-container[display="true"] { background-color: rgba(79, 70, 229, 0.05); padding: 1em; border-radius: 8px; margin: 1em 0; }
+        .summary-tips-list { list-style: none; padding: 0; }
+        .summary-tips-list li { display: flex; align-items: flex-start; gap: 1em; margin-bottom: 1em; background-color: var(--primary-light); padding: 1em; border-radius: 8px; }
+        .summary-tips-list li::before { content: '💡'; font-size: 1.2em; line-height: 1.5; }
+        #summary-continue-btn { padding: 12px 30px; font-size: 1em; font-weight: bold; color: var(--white); background-color: var(--primary-color); border: none; border-radius: 10px; cursor: pointer; transition: all 0.2s; display: block; width: 100%; }
+        #summary-continue-btn:hover { background-color: var(--primary-dark); transform: scale(1.02); }
+
+        /* --- Main Quiz & Final Screen Styles --- */
+        #quiz-header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5em; }
+        #problem-header { color: var(--text-color); font-weight: 600; font-size: 1.1em; }
+        #score-counter { color: var(--success-color); font-weight: 600; font-size: 1em; background-color: var(--success-light); padding: 5px 10px; border-radius: 8px; }
+        #progress-container { width: 100%; background-color: #e2e8f0; border-radius: 10px; margin-bottom: 1.5em; height: 12px; overflow: hidden; }
+        #progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, var(--progress-color-start), var(--progress-color-end)); border-radius: 10px; transition: width 0.6s cubic-bezier(0.4, 0.0, 0.2, 1); }
+        #question-container { font-size: 1.15em; line-height: 1.7; margin: 1em 0; color: var(--text-color); text-align: justify; }
+        #question-container table { width: 100%; border-collapse: collapse; margin: 1em 0; }
+        #question-container th, #question-container td { border: 1px solid var(--border-color); padding: 12px; text-align: center; }
+        #question-container th { background-color: var(--light-bg); font-weight: 600; }
+        #graph-container, .option-graph-canvas-container { width: 100%; max-width: 450px; margin: 1.5em auto; border-radius: 8px; overflow: hidden; }
+        #graph-container svg, #graph-container img, .option-graph-canvas-container svg, .option-graph-canvas-container img {max-width: 100%; height: auto; display: block; margin: 0 auto; background: white; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color);}
+        #options-container { margin-top: 1.5em; display: flex; flex-direction: column; gap: 0.75em; }
+        .option-button { display: flex; align-items: center; gap: 1em; width: 100%; padding: 14px 18px; font-size: 1.05em; text-align: left; background-color: var(--white); border: 2px solid var(--border-color); border-radius: 12px; cursor: pointer; transition: all 0.2s ease-in-out; }
+        .option-button:hover:not(.disabled) { border-color: var(--primary-color); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .option-button .label { font-weight: bold; color: var(--primary-color); }
+        .option-button .value { flex-grow: 1; }
+        .option-button.correct { border-color: var(--success-color); background-color: var(--success-light); }
+        .option-button.correct .label { color: var(--success-color); }
+        .option-button.incorrect { border-color: var(--danger-color); background-color: var(--danger-light); }
+        .option-button.incorrect .label { color: var(--danger-color); }
+        .option-button.disabled { cursor: not-allowed; }
+        .options-grid-with-graphs { display: grid; grid-template-columns: 1fr 1fr; gap: 1em; }
+        .option-block-graph { padding: 1em; border: 2px solid var(--border-color); border-radius: 12px; cursor: pointer; transition: all 0.2s ease-in-out; background-color: var(--white); }
+        .option-block-graph:hover:not(.disabled) { border-color: var(--primary-color); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .option-block-graph.correct { border-color: var(--success-color)!important; background-color: var(--success-light); }
+        .option-block-graph.incorrect { border-color: var(--danger-color)!important; background-color: var(--danger-light); }
+        .option-block-graph .label { font-size: 1.2em; font-weight: bold; margin-bottom: 0.5em; color: var(--primary-color); }
+        
+        #hints-container { margin-top: 1.5em; border-top: 1px dashed var(--border-color); padding-top: 1.5em; display: flex; flex-direction: column; gap: 0.5em; }
+        .hint-button { width: 100%; padding: 10px; background-color: var(--primary-light); border: 1px solid var(--primary-color); color: var(--primary-dark); border-radius: 8px; cursor: pointer; transition: background-color 0.2s; font-weight: 500; }
+        .hint-button:hover { background-color: #dbeafe; }
+        .hint-button:disabled { background-color: #e5e7eb; border-color: var(--border-color); color: var(--secondary-color); cursor: not-allowed; }
+        .hint-content { padding: 12px; background-color: #f3f4f6; border-radius: 8px; font-size: 0.95em; color: var(--text-color); animation: fadeIn 0.3s; }
+
+        #feedback-container { margin-top: 1.5em; padding: 1.2em; border-radius: 12px; display: none; animation: slideDownFade 0.4s ease-out; line-height: 1.7; text-align: justify; }
+        #feedback-container.correct { background-color: var(--success-light); border-left: 5px solid var(--success-color); }
+        #feedback-container.incorrect { background-color: var(--danger-light); border-left: 5px solid var(--danger-color); }
+        #feedback-title { display: flex; align-items: center; font-size: 1.2em; font-weight: 700; margin-bottom: 0.5em; }
+        #feedback-title svg { width: 24px; height: 24px; margin-right: 8px; }
+        #feedback-container.correct #feedback-title { color: var(--success-color); }
+        #feedback-container.incorrect #feedback-title { color: var(--danger-color); }
+        #navigation-container { display: flex; justify-content: flex-end; margin-top: 2em; }
+        #next-button, .nav-btn { padding: 12px 30px; font-size: 1em; font-weight: bold; color: var(--white); background-color: var(--primary-color); border: none; border-radius: 10px; cursor: pointer; transition: all 0.3s; }
+        #next-button { visibility: hidden; opacity: 0; }
+        #next-button.visible { visibility: visible; opacity: 1; }
+        #next-button:hover, .nav-btn:hover { background-color: var(--primary-dark); }
+        #final-screen { text-align: center; animation: fadeIn 0.5s ease-out; }
+        #final-screen h2 { font-size: 2.2em; color: var(--primary-color); font-weight: 700; }
+        #final-screen p { font-size: 1.2em; }
+        .highlight { color: var(--primary-color); font-weight: 700; }
+        @media (max-width: 680px) { .options-grid-with-graphs { grid-template-columns: 1fr; } #category-list { grid-template-columns: 1fr; }}
+    </style>
+</head>
+<body>
+    <div class="main-wrapper">
+        <div id="category-selection-screen" class="card">
+            <h2>Cuestionario Integral de Dinámica y Cinemática</h2>
+            <p class="subtitle">Selecciona un tema para comenzar. Cada sección se enfoca en una habilidad clave. ¡Completa todas las secciones para demostrar tu maestría!</p>
+            <ul id="category-list"></ul>
+            <div id="overall-progress-container" class="hidden">
+                <h3>Progreso General</h3>
+                <p id="overall-score"></p>
+                <button id="show-final-results-btn" class="nav-btn hidden">Ver Resumen Final</button>
+            </div>
+        </div>
+
+        <div id="quiz-wrapper" class="hidden">
+            <div id="summary-container" class="card hidden">
+                <h2 id="summary-title"></h2>
+                <p class="subtitle">Prepárate para la siguiente sección.</p>
+
+                <div class="summary-section">
+                    <h3>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-book-open" style="color: var(--primary-dark);"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                      Conceptos Clave y Fórmulas
+                    </h3>
+                    <div id="summary-key-concepts" class="summary-key-concepts"></div>
+                </div>
+                
+                <div class="summary-section">
+                    <h3>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-zap" style="color: var(--warning-color);"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                      Consejos para esta Sección
+                    </h3>
+                    <ul id="summary-tips-list" class="summary-tips-list"></ul>
+                </div>
+                
+                <button id="summary-continue-btn">Comenzar Problemas</button>
+            </div>
+
+            <div id="quiz-container" class="hidden card">
+                <div id="progress-container"><div id="progress-bar"></div></div>
+                <div id="quiz-header-bar">
+                    <div id="problem-header"></div>
+                    <div id="score-counter"></div>
+                </div>
+                <div id="question-container"></div>
+                <div id="graph-container"></div>
+                <div id="options-container"></div>
+                <div id="hints-container"></div>
+                <div id="feedback-container"></div>
+                <div id="navigation-container"><button id="next-button">Siguiente →</button></div>
+            </div>
+
+            <div id="final-screen" class="hidden card">
+                <h2 id="final-title"></h2>
+                <p id="final-message"></p>
+                <p id="final-score" style="font-size: 2.5em; font-weight: bold; margin: 0.5em 0;"></p>
+                <p id="final-percentage" style="font-size: 1.5em;"></p>
+                <button id="back-to-menu-btn" class="nav-btn">Volver al Menú</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function renderMath() {
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        setTimeout(() => window.MathJax.typesetPromise(), 0);
+      }
+    }
+
+    function renderDiagram(diagram) {
+        if (!diagram) return '';
+        if (diagram.type === 'raster') {
+            return `<img src="${diagram.src}" alt="Diagrama" style="max-width: 100%; height: auto; display: block; margin: 0 auto; background: white; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1;" />`;
+        }
+        return '';
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        const icons = {
+            check: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>`,
+            x: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`
+        };
+        const summaries = {
+  "ai-cat-1759084460771-0": {
+    "title": "Fundamentos de Dinámica y Cinemática",
+    "key_concepts_html": "<p>Esta sección cubre los principios fundamentales de la dinámica y la cinemática, esenciales para entender cómo las fuerzas afectan el movimiento de los objetos. Aquí se exploran:</p><ul><li><strong>Leyes de Newton:</strong> Especialmente la Segunda Ley, que establece que la fuerza neta aplicada a un objeto es igual al producto de su masa por su aceleración (\n        \\(F_{\\text{neta}} = ma\\)\n      ).</li><li><strong>Fricción:</strong> La fuerza de fricción cinética (\n        \\(f_k = \\mu_k N\\)\n      ) que se opone al movimiento, donde \n        \\(\\mu_k\\)\n       es el coeficiente de fricción cinética y \n        \\(N\\)\n       es la fuerza normal.</li><li><strong>Sistemas de bloques:</strong> Cómo analizar la aceleración común de múltiples bloques conectados o empujados, considerando la masa total del sistema.</li><li><strong>Máquina de Atwood:</strong> Un caso especial de sistema de masas conectadas por una polea, donde la aceleración se calcula como \n        \\(a = \\frac{(m_2-m_1)g}{m_1+m_2}\\)\n      .</li><li><strong>Movimiento Uniformemente Acelerado (UAM):</strong> Ecuaciones clave como \n        \\(v = v_0 + at\\)\n      , \n        \\(\\Delta x = v_0 t + \\frac{1}{2}at^2\\)\n      y \n        \\(v^2 = v_0^2 + 2a\\Delta x\\)\n      , utilizadas para describir el movimiento con aceleración constante.</li></ul><p>Es crucial dominar estos conceptos básicos antes de abordar problemas más complejos en física.</p>",
+    "tips": [
+      "Presta atención a los detalles en los enunciados y diagramas.",
+      "Recuerda revisar las fórmulas y conceptos clave relacionados antes de empezar.",
+      "Usa la explicación para entender tus errores y reforzar tu aprendizaje.",
+      "¡Mucha suerte en esta sección!"
+    ]
+  },
+  "ai-cat-1759084460771-1": {
+    "title": "Problemas Avanzados de Dinámica",
+    "key_concepts_html": "<p>Esta categoría profundiza en aplicaciones más complejas de las leyes de Newton y principios de conservación, abarcando escenarios que requieren un análisis más detallado de las interacciones y fuerzas internas en sistemas de cuerpos.</p><ul><li><strong>Sistemas de múltiples cuerpos:</strong> Cómo aplicar la Segunda Ley de Newton a sistemas de varios bloques conectados por cuerdas o en contacto, tanto en superficies lisas como con fricción. Esto implica considerar la aceleración del sistema como un todo y luego analizar las fuerzas internas (tensiones, fuerzas de contacto) en cada subsistema.</li><li><strong>Fuerzas internas:</strong> La Tercera Ley de Newton es fundamental para entender que las fuerzas de interacción entre cuerpos dentro de un sistema son iguales en magnitud y opuestas en dirección.</li><li><strong>Fricción estática máxima:</strong> Análisis de condiciones límite donde la fuerza de fricción estática alcanza su valor máximo antes de que un objeto empiece a deslizarse (\n        \\(f_{s,\\text{max}} = \\mu_s N\\)\n      ).</li><li><strong>Impulso y cantidad de movimiento:</strong> Aplicación del teorema del impulso y la cantidad de movimiento (\n        \\(J = \\Delta p = m\\Delta v\\)\n      ) y el principio de conservación de la cantidad de movimiento (\n        \\(P_{\\text{inicial}} = P_{\\text{final}}\\) para sistemas aislados). Estos conceptos son clave para problemas de colisiones, retroceso y empujes mutuos.</li><li><strong>Ascensores y poleas con fricción:</strong> Integración de la aceleración gravitacional y la fricción en sistemas con movimiento vertical y horizontal.</li></ul><p>La clave para resolver estos problemas es el dibujo de diagramas de cuerpo libre precisos y la aplicación sistemática de las leyes de Newton a cada componente del sistema.</p>",
+    "tips": [
+      "Presta atención a los detalles en los enunciados y diagramas.",
+      "Recuerda revisar las fórmulas y conceptos clave relacionados antes de empezar.",
+      "Usa la explicación para entender tus errores y reforzar tu aprendizaje.",
+      "¡Mucha suerte en esta sección!"
+    ]
+  }
+};
+        const allProblemsData = [
+  {
+    "text": "Dos bloques están conectados por una cuerda ligera: \\(m_1=3\\ \\mathrm{kg}\\) y \\(m_2=5\\ \\mathrm{kg}\\). Se aplica una fuerza horizontal \\(F=16\\ \\mathrm{N}\\) tirando del bloque de \\(5\\ \\mathrm{kg}\\) y la superficie es idealmente lisa (sin fricción). ¿Cuál es la aceleración común del sistema?",
+    "options": [
+      {
+        "text": "\\(1\\ \\mathrm{m/s^2}\\)"
+      },
+      {
+        "text": "\\(2\\ \\mathrm{m/s^2}\\)"
+      },
+      {
+        "text": "\\(4\\ \\mathrm{m/s^2}\\)"
+      },
+      {
+        "text": "\\(8\\ \\mathrm{m/s^2}\\)"
+      },
+      {
+        "text": "\\(16\\ \\mathrm{m/s^2}\\)"
+      }
+    ],
+    "correct": 1,
+    "explanation": "La aceleración del sistema de dos bloques conectados en una superficie sin fricción se calcula como la fuerza total dividida por la masa total: \\(a = F / (m_1 + m_2)\\). Sustituyendo los valores, la masa total es \\(3\\ \\mathrm{kg} + 5\\ \\mathrm{kg} = 8\\ \\mathrm{kg}\\). Por lo tanto, \\(a = 16\\ \\mathrm{N} / 8\\ \\mathrm{kg} = 2\\ \\mathrm{m/s^2}\\).",
+    "hints": [
+      "Considera que ambos bloques se mueven como una única entidad. ¿Qué implica esto para su aceleración?",
+      "La fuerza neta que actúa sobre todo el sistema es la fuerza \\(F\\) aplicada. ¿Cuál es la masa total que se está acelerando?",
+      "Utiliza la Segunda Ley de Newton para el sistema completo: \\(a = F_{\\text{neta}} / M_{\\text{total}}\\). Reemplaza \\(F=16\\ \\mathrm{N}\\) y \\(M_{\\text{total}} = m_1+m_2\\)."
+    ],
+    "sourceFileName": "Text Input",
+    "originalQuestionNumber": "1",
+    "internalId": "q-1759084460771-0.4173365802957434",
+    "id": "q-ai-cat-1759084460771-0-0"
+  },
+  {
+    "text": "Una piedra se lanza verticalmente hacia arriba con velocidad inicial \\(v_0=30\\ \\mathrm{m/s}\\). Tomando \\(g=10\\ \\mathrm{m/s^2}\\), ¿cuál es el tiempo total que la piedra tarda en volver al punto de lanzamiento (ida y vuelta)?",
+    "options": [
+      {
+        "text": "\\(1\\ \\mathrm{s}\\)"
+      },
+      {
+        "text": "\\(3\\ \\mathrm{s}\\)"
+      },
+      {
+        "text": "\\(6\\ \\mathrm{s}\\)"
+      },
+      {
+        "text": "\\(9\\ \\mathrm{s}\\)"
+      },
+      {
+        "text": "\\(12\\ \\mathrm{s}\\)"
+      }
+    ],
+    "correct": 2,
+    "explanation": "Para calcular el tiempo total, primero encontramos el tiempo de subida. En el punto más alto, la velocidad final es cero. Usando \\(v = v_0 + at\\), tenemos \\(0 = 30\\ \\mathrm{m/s} - (10\\ \\mathrm{m/s^2}) t_{\\text{subida}}\\), lo que da \\(t_{\\text{subida}} = 3\\ \\mathrm{s}\\). Debido a la simetría del movimiento vertical bajo gravedad, el tiempo de bajada es igual al tiempo de subida. Por lo tanto, el tiempo total es \\(2 \\times 3\\ \\mathrm{s} = 6\\ \\mathrm{s}\\).",
+    "hints": [
+      "¿Qué ocurre con la velocidad de la piedra en el punto más alto de su trayectoria, antes de empezar a caer?",
+      "Puedes calcular el tiempo que tarda la piedra en alcanzar su altura máxima. Recuerda que la aceleración debido a la gravedad es constante y actúa hacia abajo.",
+      "Utiliza la ecuación cinemática \\(v = v_0 + at\\) para encontrar el tiempo de subida, donde \\(v=0\\) en el punto más alto. Luego, considera la relación entre el tiempo de subida y el tiempo total para regresar al punto de lanzamiento."
+    ],
+    "sourceFileName": "Text Input",
+    "originalQuestionNumber": "2",
+    "internalId": "q-1759084460771-0.06558205509137105",
+    "id": "q-ai-cat-1759084460771-0-1"
+  },
+  {
+    "text": "Dos masas cuelgan de una polea ideal: \\(m_1=4\\ \\mathrm{kg}\\) y \\(m_2=6\\ \\mathrm{kg}\\). La polea y la cuerda son ideales (sin fricción, masa despreciable). ¿Cuál es la aceleración del sistema (módulo)?",
+    "options": [
+      {
+        "text": "\\(0.50\\ \\mathrm{m/s^2}\\)"
+      },
+      {
+        "text": "\\(1.00\\ \\mathrm{m/s^2}\\)"
+      },
+      {
+        "text": "\\(2.00\\ \\mathrm{m/s^2}\\)"
+      },
+      {
+        "text": "\\(3.00\\ \\mathrm{m/s^2}\\)"
+      },
+      {
+        "text": "\\(4.00\\ \\mathrm{m/s^2}\\)"
+      }
+    ],
+    "correct": 2,
+    "explanation": "La aceleración de una máquina de Atwood se calcula usando la fórmula \\(a = \\frac{(m_2-m_1)g}{m_1+m_2}\\). Sustituyendo los valores, \\(m_1=4\\ \\mathrm{kg}\\), \\(m_2=6\\ \\mathrm{kg}\\) y \\(g=10\\ \\mathrm{m/s^2}\\), obtenemos \\(a = \\frac{(6-4)\\,\\mathrm{kg} \\times 10\\,\\mathrm{m/s^2}}{(4+6)\\,\\mathrm{kg}} = \\frac{2\\,\\mathrm{kg} \\times 10\\,\\mathrm{m/s^2}}{10\\,\\mathrm{kg}} = \\frac{20\\,\\mathrm{N}}{10\\,\\mathrm{kg}} = 2.00\\ \\mathrm{m/s^2}\\).",
+    "hints": [
+      "¿Cuál es el concepto clave que describe el movimiento de dos masas conectadas por una polea?",
+      "La fórmula para la aceleración de una máquina de Atwood es \\(a = \\frac{(m_2-m_1)g}{m_1+m_2}\\). Identifica las masas y la aceleración de la gravedad.",
+      "Sustituye los valores de \\(m_1=4\\ \\mathrm{kg}\\), \\(m_2=6\\ \\mathrm{kg}\\) y \\(g=10\\ \\mathrm{m/s^2}\\) en la fórmula. ¿Qué valor obtienes para la diferencia de masas y la suma de masas?"
+    ],
+    "sourceFileName": "Text Input",
+    "originalQuestionNumber": "3",
+    "internalId": "q-1759084460771-0.5381015487256344",
+    "id": "q-ai-cat-1759084460771-0-2"
+  },
+  {
+    "text": "Un bloque de masa \\(10\\ \\mathrm{kg}\\) recibe una fuerza horizontal constante de \\(30\\ \\mathrm{N}\\) sobre una superficie con coeficiente de fricción cinética \\(\\mu_k=0.20\\). (Toma \\(g=10\\ \\mathrm{m/s^2}\\)). ¿Cuál es la aceleración del bloque?",
+    "options": [
+      {
+        "text": "\\(0.5\\ \\mathrm{m/s^2}\\)"
+      },
+      {
+        "text": "\\(1.0\\ \\mathrm{m/s^2}\\)"
+      },
+      {
+        "text": "\\(2.0\\ \\mathrm{m/s^2}\\)"
+      },
+      {
+        "text": "\\(3.0\\ \\mathrm{m/s^2}\\)"
+      },
+      {
+        "text": "\\(4.0\\ \\mathrm{m/s^2}\\)"
+      }
+    ],
+    "correct": 1,
+    "explanation": "Primero, calculamos la fuerza de fricción cinética: \\(f_k = \\mu_k N\\). Como el bloque está en una superficie horizontal, la fuerza normal \\(N = mg = 10\\ \\mathrm{kg} \\times 10\\ \\mathrm{m/s^2} = 100\\ \\mathrm{N}\\). Entonces, \\(f_k = 0.20 \\times 100\\ \\mathrm{N} = 20\\ \\mathrm{N}\\). La fuerza neta sobre el bloque es la fuerza aplicada menos la fuerza de fricción: \\(F_{\\text{neta}} = F - f_k = 30\\ \\mathrm{N} - 20\\ \\mathrm{N} = 10\\ \\mathrm{N}\\). Finalmente, la aceleración es \\(a = F_{\\text{neta}} / m = 10\\ \\mathrm{N} / 10\\ \\mathrm{kg} = 1.0\\ \\mathrm{m/s^2}\\).",
+    "hints": [
+      "Además de la fuerza aplicada, ¿qué otra fuerza horizontal actúa sobre el bloque para oponerse a su movimiento?",
+      "Calcula la fuerza de fricción cinética. Recuerda que la fuerza normal es igual al peso en una superficie horizontal. Luego, determina la fuerza neta que causa la aceleración.",
+      "Usa \\(f_k = \\mu_k m g\\) para la fricción. Luego, aplica la Segunda Ley de Newton: \\(a = (F_{\\text{aplicada}} - f_k) / m\\)."
+    ],
+    "sourceFileName": "Text Input",
+    "originalQuestionNumber": "4",
+    "internalId": "q-1759084460771-0.6363058371911914",
+    "id": "q-ai-cat-1759084460771-0-3"
+  },
+  {
+    "text": "Un ascensor de masa \\(80\\ \\mathrm{kg}\\) acelera hacia arriba con \\(2\\ \\mathrm{m/s^2}\\). ¿Cuál es la tensión en el cable que lo sostiene? (Toma \\(g=10\\ \\mathrm{m/s^2}\\).)",
+    "options": [
+      {
+        "text": "\\(640\\ \\mathrm{N}\\)"
+      },
+      {
+        "text": "\\(800\\ \\mathrm{N}\\)"
+      },
+      {
+        "text": "\\(880\\ \\mathrm{N}\\)"
+      },
+      {
+        "text": "\\(960\\ \\mathrm{N}\\)"
+      },
+      {
+        "text": "\\(1120\\ \\mathrm{N}\\)"
+      }
+    ],
+    "correct": 3,
+    "explanation": "Aplicamos la Segunda Ley de Newton en la dirección vertical. Las fuerzas que actúan son la tensión \\(T\\) hacia arriba y el peso \\(mg\\) hacia abajo. Como el ascensor acelera hacia arriba, la fuerza neta es \\(T - mg = ma\\). Despejando la tensión: \\(T = mg + ma = m(g+a)\\). Sustituyendo los valores: \\(T = 80\\ \\mathrm{kg} \\times (10\\ \\mathrm{m/s^2} + 2\\ \\mathrm{m/s^2}) = 80\\ \\mathrm{kg} \\times 12\\ \\mathrm{m/s^2} = 960\\ \\mathrm{N}\\).",
+    "hints": [
+      "Cuando el ascensor acelera hacia arriba, ¿cómo se compara la tensión en el cable con el peso del ascensor?",
+      "Plantea la Segunda Ley de Newton para el ascensor. Considera que la aceleración es positiva hacia arriba y las fuerzas que actúan en esa dirección.",
+      "Usa la ecuación \\(T - mg = ma\\). Despeja \\(T\\) y sustituye \\(m=80\\ \\mathrm{kg}\\), \\(g=10\\ \\mathrm{m/s^2}\\) y \\(a=2\\ \\mathrm{m/s^2}\\)."
+    ],
+    "sourceFileName": "Text Input",
+    "originalQuestionNumber": "5",
+    "internalId": "q-1759084460771-0.396404521729657",
+    "id": "q-ai-cat-1759084460771-0-4"
+  },
+  {
+    "text": "Un bloque \\(m_1=3\\ \\mathrm{kg}\\) está sobre una mesa horizontal con coeficiente de fricción cinética \\(\\mu_k=0.10\\). Está conectado por una cuerda a un bloque colgante \\(m_2=4\\ \\mathrm{kg}\\) (sistema ideal). (Toma \\(g=10\\ \\mathrm{m/s^2}\\)). ¿Cuál es la aceleración del sistema y la tensión en la cuerda? (Da ambos valores).",
+    "options": [
+      {
+        "text": "\\(a=3.7\\ \\mathrm{m/s^2},\\ T=15.1\\ \\mathrm{N}\\)"
+      },
+      {
+        "text": "\\(a=4.0\\ \\mathrm{m/s^2},\\ T=16.0\\ \\mathrm{N}\\)"
+      },
+      {
+        "text": "\\(a\\approx5.29\\ \\mathrm{m/s^2},\\ T\\approx18.9\\ \\mathrm{N}\\)"
+      },
+      {
+        "text": "\\(a=6.0\\ \\mathrm{m/s^2},\\ T=20.0\\ \\mathrm{N}\\)"
+      },
+      {
+        "text": "\\(a=7.0\\ \\mathrm{m/s^2},\\ T=22.0\\ \\mathrm{N}\\)"
+      }
+    ],
+    "correct": 2,
+    "explanation": "Primero, calculamos la fuerza de fricción en \\(m_1\\): \\(f_k = \\mu_k m_1 g = 0.10 \\times 3\\ \\mathrm{kg} \\times 10\\ \\mathrm{m/s^2} = 3\\ \\mathrm{N}\\). La fuerza que impulsa el sistema es el peso de \\(m_2\\), \\(m_2 g = 4\\ \\mathrm{kg} \\times 10\\ \\mathrm{m/s^2} = 40\\ \\mathrm{N}\\). La fuerza neta sobre el sistema es \\(m_2 g - f_k = 40\\ \\mathrm{N} - 3\\ \\mathrm{N} = 37\\ \\mathrm{N}\\). La masa total del sistema es \\(m_1 + m_2 = 3\\ \\mathrm{kg} + 4\\ \\mathrm{kg} = 7\\ \\mathrm{kg}\\). La aceleración es \\(a = F_{\\text{neta}} / M_{\\text{total}} = 37\\ \\mathrm{N} / 7\\ \\mathrm{kg} \\approx 5.29\\ \\mathrm{m/s^2}\\). Para la tensión, podemos usar la ecuación de movimiento para \\(m_1\\): \\(T - f_k = m_1 a\\), por lo tanto \\(T = m_1 a + f_k = 3\\ \\mathrm{kg} \\times 5.2857\\ \\mathrm{m/s^2} + 3\\ \\mathrm{N} \\approx 15.857\\ \\mathrm{N} + 3\\ \\mathrm{N} \\approx 18.9\\ \\mathrm{N}\\).",
+    "hints": [
+      "Identifica todas las fuerzas que actúan sobre cada bloque y cómo se relacionan entre sí a través de la cuerda y la fricción.",
+      "Calcula la fuerza de fricción cinética sobre el bloque en la mesa. Luego, considera que la fuerza impulsora del sistema es el peso del bloque colgante. La fuerza neta del sistema es la diferencia entre estas dos fuerzas, dividida por la masa total para obtener la aceleración.",
+      "Usa \\(f_k = \\mu_k m_1 g\\) para la fricción. La aceleración del sistema es \\(a = \\frac{m_2 g - f_k}{m_1 + m_2}\\). Una vez que tengas \\(a\\), puedes encontrar la tensión usando la ecuación de movimiento para \\(m_1\\): \\(T = m_1 a + f_k\\)."
+    ],
+    "sourceFileName": "Text Input",
+    "originalQuestionNumber": "6",
+    "internalId": "q-1759084460771-0.002956492390855492",
+    "id": "q-ai-cat-1759084460771-0-5"
+  },
+  {
+    "text": "Un automóvil viaja a \\(20\\ \\mathrm{m/s}\\) y frena con una desaceleración constante de magnitud \\(5\\ \\mathrm{m/s^2}\\) hasta detenerse. ¿Cuál es la distancia que recorre hasta detenerse?",
+    "options": [
+      {
+        "text": "\\(20\\ \\mathrm{m}\\)"
+      },
+      {
+        "text": "\\(32\\ \\mathrm{m}\\)"
+      },
+      {
+        "text": "\\(40\\ \\mathrm{m}\\)"
+      },
+      {
+        "text": "\\(80\\ \\mathrm{m}\\)"
+      },
+      {
+        "text": "\\(100\\ \\mathrm{m}\\)"
+      }
+    ],
+    "correct": 2,
+    "explanation": "Para este problema de movimiento uniformemente acelerado, la ecuación más adecuada es \\(v^2 = v_0^2 + 2a\\Delta x\\). Sabemos que la velocidad final \\(v=0\\ \\mathrm{m/s}\\), la velocidad inicial \\(v_0=20\\ \\mathrm{m/s}\\) y la aceleración \\(a=-5\\ \\mathrm{m/s^2}\\) (es negativa porque es una desaceleración). Sustituyendo: \\(0^2 = (20\\ \\mathrm{m/s})^2 + 2(-5\\ \\mathrm{m/s^2})\\Delta x\\). Esto se simplifica a \\(0 = 400 - 10\\Delta x\\). Despejando \\(\\Delta x\\), obtenemos \\(10\\Delta x = 400\\), por lo tanto \\(\\Delta x = 40\\ \\mathrm{m}\\).",
+    "hints": [
+      "¿Cuál de las ecuaciones del Movimiento Uniformemente Acelerado (UAM) relaciona la velocidad inicial, la velocidad final, la aceleración y la distancia sin involucrar el tiempo?",
+      "La velocidad final es cero, y la aceleración es negativa ya que es una desaceleración. Asegúrate de usar el signo correcto para la aceleración.",
+      "Utiliza la ecuación \\(v^2 = v_0^2 + 2a\\Delta x\\). Sustituye \\(v=0\\), \\(v_0=20\\ \\mathrm{m/s}\\) y \\(a=-5\\ \\mathrm{m/s^2}\\) para despejar \\(\\Delta x\\)."
+    ],
+    "sourceFileName": "Text Input",
+    "originalQuestionNumber": "7",
+    "internalId": "q-1759084460771-0.47462197307738996",
+    "id": "q-ai-cat-1759084460771-0-6"
+  },
+  {
+    "text": "Dos patinadores inicialmente en reposo se empujan mutuamente y se separan. Las masas son \\(m_1=50\\ \\mathrm{kg}\\) y \\(m_2=75\\ \\mathrm{kg}\\). Durante el empujón la fuerza que uno ejerce sobre el otro es igual y opuesta (tercera ley). Si el empujón impone un impulso de magnitud \\(J=120\\ \\mathrm{kg\\cdot m/s}\\) sobre cada patinador (en sentidos opuestos), ¿cuál es la razón entre sus velocidades finales \\(v_1/v_2\\) (magnitudes)?",
+    "options": [
+      {
+        "text": "\\(0.67\\)"
+      },
+      {
+        "text": "\\(1.00\\)"
+      },
+      {
+        "text": "\\(1.25\\)"
+      },
+      {
+        "text": "\\(1.50\\)"
+      },
+      {
+        "text": "\\(2.00\\)"
+      }
+    ],
+    "correct": 3,
+    "explanation": "Según el principio de conservación de la cantidad de movimiento, el impulso que uno ejerce sobre el otro es igual en magnitud y opuesto en dirección. Dado que ambos patinadores parten del reposo, el impulso \\(J\\) aplicado a cada uno es igual a su cambio en la cantidad de movimiento, es decir, \\(J = m_1 v_1 = m_2 v_2\\). De esta igualdad, podemos expresar la razón de las velocidades como \\(v_1/v_2 = m_2/m_1\\). Sustituyendo los valores, \\(v_1/v_2 = 75\\ \\mathrm{kg} / 50\\ \\mathrm{kg} = 1.5\\).",
+    "hints": [
+      "¿Qué principio físico fundamental se aplica cuando dos objetos que interactúan parten del reposo y se separan?",
+      "El impulso es igual al cambio en la cantidad de movimiento. Si ambos patinadores reciben el mismo impulso en magnitud y parten del reposo, ¿cómo se relacionan sus cantidades de movimiento finales?",
+      "Establece la relación \\(m_1 v_1 = m_2 v_2\\) y luego despeja la razón \\(v_1/v_2\\) en términos de las masas. Luego sustituye \\(m_1=50\\ \\mathrm{kg}\\) y \\(m_2=75\\ \\mathrm{kg}\\)."
+    ],
+    "sourceFileName": "Text Input",
+    "originalQuestionNumber": "8",
+    "internalId": "q-1759084460771-0.8216256592693216",
+    "id": "q-ai-cat-1759084460771-0-7"
+  },
+  {
+    "text": "Tres bloques \\(m_1=2\\ \\mathrm{kg}\\), \\(m_2=3\\ \\mathrm{kg}\\) y \\(m_3=5\\ \\mathrm{kg}\\) están conectados por cuerdas inextensibles y sin masa sobre una superficie horizontal sin fricción. Una fuerza horizontal \\(F=50\\ \\mathrm{N}\\) tira del bloque \\(m_1\\), arrastrando a los tres juntos. ¿Cuál es la aceleración del conjunto y las tensiones en las cuerdas entre \\(m_1\\)-\\(m_2\\) y entre \\(m_2\\)-\\(m_3\\)? (Da ambos valores).",
+    "options": [
+      {
+        "text": "\\(a=2\\ \\mathrm{m/s^2},\\ T_{12}=24\\ \\mathrm{N},\\ T_{23}=10\\ \\mathrm{N}\\)"
+      },
+      {
+        "text": "\\(a=3\\ \\mathrm{m/s^2},\\ T_{12}=30\\ \\mathrm{N},\\ T_{23}=18\\ \\mathrm{N}\\)"
+      },
+      {
+        "text": "\\(a=5\\ \\mathrm{m/s^2},\\ T_{12}=40\\ \\mathrm{N},\\ T_{23}=25\\ \\mathrm{N}\\)"
+      },
+      {
+        "text": "\\(a=10\\ \\mathrm{m/s^2},\\ T_{12}=80\\ \\mathrm{N},\\ T_{23}=60\\ \\mathrm{N}\\)"
+      },
+      {
+        "text": "\\(a=12\\ \\mathrm{m/s^2},\\ T_{12}=96\\ \\mathrm{N},\\ T_{23}=72\\ \\mathrm{N}\\)"
+      }
+    ],
+    "correct": 2,
+    "explanation": "Primero, calculamos la aceleración del sistema completo. La masa total es \\(M = m_1+m_2+m_3 = 2+3+5 = 10\\ \\mathrm{kg}\\). La fuerza neta es \\(F=50\\ \\mathrm{N}\\). Por la Segunda Ley de Newton, \\(a = F/M = 50\\ \\mathrm{N} / 10\\ \\mathrm{kg} = 5\\ \\mathrm{m/s^2}\\). Para la tensión \\(T_{23}\\) (entre \\(m_2\\) y \\(m_3\\)), esta cuerda solo acelera a \\(m_3\\): \\(T_{23} = m_3 a = 5\\ \\mathrm{kg} \\times 5\\ \\mathrm{m/s^2} = 25\\ \\mathrm{N}\\). Para la tensión \\(T_{12}\\) (entre \\(m_1\\) y \\(m_2\\)), esta cuerda acelera a \\(m_2\\) y \\(m_3\\): \\(T_{12} = (m_2+m_3)a = (3+5)\\,\\mathrm{kg} \\times 5\\ \\mathrm{m/s^2} = 8\\ \\mathrm{kg} \\times 5\\ \\mathrm{m/s^2} = 40\\ \\mathrm{N}\\).",
+    "hints": [
+      "Para un sistema de bloques conectados, ¿cuál es la relación entre sus aceleraciones? ¿Cómo puedes calcular la aceleración de todo el sistema como una sola entidad?",
+      "Calcula primero la aceleración común \\(a\\) usando la fuerza total y la masa total del sistema. Luego, para encontrar las tensiones, considera cada cuerda como una fuerza que acelera solo a los bloques que están 'detrás' de ella.",
+      "La aceleración \\(a = F / (m_1+m_2+m_3)\\). Para la tensión \\(T_{23}\\), aplica la Segunda Ley de Newton a \\(m_3\\) (\\(T_{23} = m_3 a\\)). Para la tensión \\(T_{12}\\), aplica la Segunda Ley de Newton al sistema \\(m_2+m_3\\) (\\(T_{12} = (m_2+m_3)a\\))."
+    ],
+    "sourceFileName": "Text Input",
+    "originalQuestionNumber": "9",
+    "internalId": "q-1759084460771-0.8045117123311512",
+    "id": "q-ai-cat-1759084460771-1-0"
+  },
+  {
+    "text": "Dos bloques en contacto horizontalmente: \\(m_1=4\\ \\mathrm{kg}\\) delante y \\(m_2=6\\ \\mathrm{kg}\\) detrás. Se aplica \\(F=30\\ \\mathrm{N}\\) al bloque trasero \\(m_2\\). Ambos tienen un coeficiente de fricción cinética \\(\\mu_k=0.10\\) con el piso. ¿Cuál es la aceleración del sistema y la magnitud de la fuerza de contacto entre \\(m_1\\) y \\(m_2\\)? (Da ambos valores).",
+    "options": [
+      {
+        "text": "\\(a=1.0\\ \\mathrm{m/s^2},\\ F_{\\text{contacto}}=10\\ \\mathrm{N}\\)"
+      },
+      {
+        "text": "\\(a=1.5\\ \\mathrm{m/s^2},\\ F_{\\text{contacto}}=18\\ \\mathrm{N}\\)"
+      },
+      {
+        "text": "\\(a=2.0\\ \\mathrm{m/s^2},\\ F_{\\text{contacto}}=12\\ \\mathrm{N}\\)"
+      },
+      {
+        "text": "\\(a=2.5\\ \\mathrm{m/s^2},\\ F_{\\text{contacto}}=22\\ \\mathrm{N}\\)"
+      },
+      {
+        "text": "\\(a=3.0\\ \\mathrm{m/s^2},\\ F_{\\text{contacto}}=24\\ \\mathrm{N}\\)"
+      }
+    ],
+    "correct": 2,
+    "explanation": "Primero, calculamos las fuerzas de fricción para cada bloque: \\(f_1 = \\mu_k m_1 g = 0.10 \\times 4\\ \\mathrm{kg} \\times 10\\ \\mathrm{m/s^2} = 4\\ \\mathrm{N}\\) y \\(f_2 = \\mu_k m_2 g = 0.10 \\times 6\\ \\mathrm{kg} \\times 10\\ \\mathrm{m/s^2} = 6\\ \\mathrm{N}\\). La fuerza neta total que acelera el sistema es la fuerza aplicada menos la fricción total: \\(F_{\\text{neta}} = F - (f_1 + f_2) = 30\\ \\mathrm{N} - (4\\ \\mathrm{N} + 6\\ \\mathrm{N}) = 30\\ \\mathrm{N} - 10\\ \\mathrm{N} = 20\\ \\mathrm{N}\\). La masa total es \\(M = m_1 + m_2 = 4\\ \\mathrm{kg} + 6\\ \\mathrm{kg} = 10\\ \\mathrm{kg}\\). La aceleración del sistema es \\(a = F_{\\text{neta}} / M = 20\\ \\mathrm{N} / 10\\ \\mathrm{kg} = 2.0\\ \\mathrm{m/s^2}\\). Para encontrar la fuerza de contacto (\\(F_{c}\\)), analizamos el bloque delantero \\(m_1\\). Las fuerzas que actúan sobre \\(m_1\\) son \\(F_c\\) (hacia adelante) y \\(f_1\\) (hacia atrás). Entonces, \\(F_c - f_1 = m_1 a\\). Despejando \\(F_c = m_1 a + f_1 = 4\\ \\mathrm{kg} \\times 2.0\\ \\mathrm{m/s^2} + 4\\ \\mathrm{N} = 8\\ \\mathrm{N} + 4\\ \\mathrm{N} = 12\\ \\mathrm{N}\\).",
+    "hints": [
+      "Considera el sistema como un todo para encontrar la aceleración. ¿Qué fuerzas de fricción actúan y cómo se combinan?",
+      "Calcula la fuerza de fricción sobre cada bloque. La fuerza neta del sistema es la fuerza aplicada menos la suma de las fuerzas de fricción. Con esto, puedes hallar la aceleración del sistema.",
+      "La aceleración \\(a = (F - \\mu_k (m_1+m_2)g) / (m_1+m_2)\\). Para la fuerza de contacto \\(F_{\\text{contacto}}\\), aísla el bloque \\(m_1\\). La ecuación de movimiento para \\(m_1\\) es \\(F_{\\text{contacto}} - \\mu_k m_1 g = m_1 a\\)."
+    ],
+    "sourceFileName": "Text Input",
+    "originalQuestionNumber": "10",
+    "internalId": "q-1759084460771-0.5687301682742958",
+    "id": "q-ai-cat-1759084460771-1-1"
+  },
+  {
+    "text": "Dos patinadores inicialmente en reposo (sobre hielo sin fricción) se empujan mutuamente. Sus masas son \\(m_1=60\\ \\mathrm{kg}\\) y \\(m_2=80\\ \\mathrm{kg}\\). El empujón produce un impulso de magnitud \\(J=120\\ \\mathrm{kg\\cdot m/s}\\) sobre cada uno (en sentidos opuestos). ¿Cuáles son sus velocidades finales (magnitudes)?",
+    "options": [
+      {
+        "text": "\\(v_1=1.5\\ \\mathrm{m/s},\\ v_2=1.0\\ \\mathrm{m/s}\\)"
+      },
+      {
+        "text": "\\(v_1=2.0\\ \\mathrm{m/s},\\ v_2=1.5\\ \\mathrm{m/s}\\)"
+      },
+      {
+        "text": "\\(v_1=0.75\\ \\mathrm{m/s},\\ v_2=0.6\\ \\mathrm{m/s}\\)"
+      },
+      {
+        "text": "\\(v_1=3.0\\ \\mathrm{m/s},\\ v_2=2.25\\ \\mathrm{m/s}\\)"
+      },
+      {
+        "text": "\\(v_1=4.0\\ \\mathrm{m/s},\\ v_2=3.0\\ \\mathrm{m/s}\\)"
+      }
+    ],
+    "correct": 1,
+    "explanation": "El teorema del impulso y la cantidad de movimiento establece que el impulso \\(J\\) aplicado a un objeto es igual al cambio en su cantidad de movimiento \\(\\Delta p\\). Dado que ambos patinadores parten del reposo, \\(J = p_{\\text{final}} - p_{\\text{inicial}} = mv - 0 = mv\\). Por lo tanto, para cada patinador, su velocidad final es \\(v = J/m\\). Para \\(m_1\\): \\(v_1 = 120\\ \\mathrm{kg\\cdot m/s} / 60\\ \\mathrm{kg} = 2.0\\ \\mathrm{m/s}\\). Para \\(m_2\\): \\(v_2 = 120\\ \\mathrm{kg\\cdot m/s} / 80\\ \\mathrm{kg} = 1.5\\ \\mathrm{m/s}\\).",
+    "hints": [
+      "¿Cómo se relaciona el impulso recibido por un objeto con su cantidad de movimiento, especialmente si parte del reposo?",
+      "La magnitud del impulso es igual a la magnitud de la cantidad de movimiento final de cada patinador. ¿Qué fórmula conecta el impulso, la masa y la velocidad?",
+      "Usa la relación \\(v = J/m\\) para cada patinador. Sustituye \\(J=120\\ \\mathrm{kg\\cdot m/s}\\) con \\(m_1=60\\ \\mathrm{kg}\\) y \\(m_2=80\\ \\mathrm{kg}\\) para encontrar \\(v_1\\) y \\(v_2\\) respectivamente."
+    ],
+    "sourceFileName": "Text Input",
+    "originalQuestionNumber": "11",
+    "internalId": "q-1759084460771-0.37749824828620326",
+    "id": "q-ai-cat-1759084460771-1-2"
+  },
+  {
+    "text": "Una persona + carro de masa total \\(M=48\\ \\mathrm{kg}\\) está inicialmente en reposo sobre una superficie sin fricción. La persona lanza horizontalmente una pelota de masa \\(m=2\\ \\mathrm{kg}\\) hacia atrás con velocidad \\(v_{\\text{pel}}=6\\ \\mathrm{m/s}\\) (respecto al suelo). Usando conservación de la cantidad de movimiento, ¿cuál es la velocidad de retroceso del conjunto persona+carro (magnitud)?",
+    "options": [
+      {
+        "text": "\\(0.20\\ \\mathrm{m/s}\\)"
+      },
+      {
+        "text": "\\(0.25\\ \\mathrm{m/s}\\)"
+      },
+      {
+        "text": "\\(0.30\\ \\mathrm{m/s}\\)"
+      },
+      {
+        "text": "\\(0.40\\ \\mathrm{m/s}\\)"
+      },
+      {
+        "text": "\\(0.50\\ \\mathrm{m/s}\\)"
+      }
+    ],
+    "correct": 1,
+    "explanation": "Aplicamos el principio de conservación de la cantidad de movimiento, ya que no hay fuerzas externas significativas (fricción despreciable). La cantidad de movimiento inicial del sistema (persona + carro + pelota) es cero porque todo está en reposo. Después de lanzar la pelota, la cantidad de movimiento total debe seguir siendo cero: \\(0 = m v_{\\text{pel}} + M v_{\\text{carro}}\\). Asignando una dirección (por ejemplo, hacia atrás es negativo), si \\(v_{\\text{pel}}=-6\\ \\mathrm{m/s}\\), entonces \\(0 = (2\\ \\mathrm{kg})(-6\\ \\mathrm{m/s}) + (48\\ \\mathrm{kg}) v_{\\text{carro}}\\). Despejando \\(v_{\\text{carro}}\\): \\(12\\ \\mathrm{kg\\cdot m/s} = (48\\ \\mathrm{kg}) v_{\\text{carro}}\\), lo que da \\(v_{\\text{carro}} = 12/48 = 0.25\\ \\mathrm{m/s}\\). La magnitud es \\(0.25\\ \\mathrm{m/s}\\).",
+    "hints": [
+      "¿Qué dice el principio de conservación de la cantidad de movimiento para un sistema aislado (sin fricción) cuando la cantidad de movimiento inicial es cero?",
+      "El momento total inicial del sistema es cero. Después de lanzar la pelota, la suma vectorial de los momentos de la pelota y del conjunto persona+carro debe seguir siendo cero.",
+      "Establece la ecuación de conservación de la cantidad de movimiento: \\(0 = m v_{\\text{pel}} + M v_{\\text{carro}}\\). Si la pelota se lanza hacia atrás (puedes asignarle un signo negativo a su velocidad), despeja \\(v_{\\text{carro}}\\)."
+    ],
+    "sourceFileName": "Text Input",
+    "originalQuestionNumber": "12",
+    "internalId": "q-1759084460771-0.37706626321733183",
+    "id": "q-ai-cat-1759084460771-1-3"
+  },
+  {
+    "text": "Un bloque pequeño \\(m_1=2\\ \\mathrm{kg}\\) se coloca encima de un bloque mayor \\(m_2=6\\ \\mathrm{kg}\\). Ambos están sobre una superficie horizontal sin fricción y el coeficiente de fricción estático entre los dos bloques es \\(\\mu_s=0.40\\). Se aplica una fuerza horizontal \\(F\\) al bloque inferior \\(m_2\\). ¿Cuál es la máxima fuerza \\(F_{\\max}\\) que puede aplicarse sin que el bloque superior se deslice respecto del inferior?",
+    "options": [
+      {
+        "text": "\\(16\\ \\mathrm{N}\\)"
+      },
+      {
+        "text": "\\(24\\ \\mathrm{N}\\)"
+      },
+      {
+        "text": "\\(32\\ \\mathrm{N}\\)"
+      },
+      {
+        "text": "\\(40\\ \\mathrm{N}\\)"
+      },
+      {
+        "text": "\\(48\\ \\mathrm{N}\\)"
+      }
+    ],
+    "correct": 2,
+    "explanation": "Para que el bloque superior \\(m_1\\) no se deslice, la fuerza de fricción estática entre \\(m_1\\) y \\(m_2\\) debe ser suficiente para acelerar \\(m_1\\). La fuerza de fricción estática máxima es \\(f_{s,\\text{max}} = \\mu_s N_1\\), donde \\(N_1 = m_1 g\\). Así, \\(f_{s,\\text{max}} = 0.40 \\times 2\\ \\mathrm{kg} \\times 10\\ \\mathrm{m/s^2} = 8\\ \\mathrm{N}\\). Esta fuerza de fricción es la que acelera a \\(m_1\\), por lo tanto, la aceleración máxima que \\(m_1\\) puede tener sin deslizar es \\(a_{\\max} = f_{s,\\text{max}} / m_1 = 8\\ \\mathrm{N} / 2\\ \\mathrm{kg} = 4\\ \\mathrm{m/s^2}\\). Para que ambos bloques se muevan juntos con esta aceleración máxima, la fuerza externa \\(F_{\\max}\\) debe acelerar la masa total \\((m_1+m_2)\\): \\(F_{\\max} = (m_1+m_2)a_{\\max} = (2\\ \\mathrm{kg} + 6\\ \\mathrm{kg}) \\times 4\\ \\mathrm{m/s^2} = 8\\ \\mathrm{kg} \\times 4\\ \\mathrm{m/s^2} = 32\\ \\mathrm{N}\\).",
+    "hints": [
+      "¿Qué fuerza es la responsable de acelerar el bloque superior (\n              \\(m_1\\)\n            ) cuando no hay deslizamiento? ¿Cuál es el valor máximo de esta fuerza?",
+      "Calcula la fuerza de fricción estática máxima que puede actuar sobre el bloque superior. Esta fricción máxima es la que le confiere la máxima aceleración posible sin deslizar. Luego, usa esa aceleración para encontrar la fuerza total que debe aplicarse al sistema completo.",
+      "La aceleración máxima de \n              \\(m_1\\)\n             sin deslizar es \n              \\(a_{\\max} = \\mu_s g\\)\n            . Para que el sistema se mueva junto con esta aceleración, la fuerza aplicada \n              \\(F_{\\max}\\)\n             debe ser \n              \\((m_1+m_2)a_{\\max}\\)\n            ."
+    ],
+    "sourceFileName": "Text Input",
+    "originalQuestionNumber": "13",
+    "internalId": "q-1759084460771-0.9492244964827345",
+    "id": "q-ai-cat-1759084460771-1-4"
+  },
+  {
+    "text": "Un bloque \\(m_1=5\\ \\mathrm{kg}\\) yace sobre una mesa con coeficiente de fricción cinética \\(\\mu_k=0.20\\) y está conectado por una cuerda que pasa por una polea ideal a un bloque colgante \\(m_2=3\\ \\mathrm{kg}\\). (Toma \\(g=10\\ \\mathrm{m/s^2}\\)). Calcular la aceleración del sistema y la tensión en la cuerda. (Da ambos valores).",
+    "options": [
+      {
+        "text": "\\(a=1.25\\ \\mathrm{m/s^2},\\ T=15.0\\ \\mathrm{N}\\)"
+      },
+      {
+        "text": "\\(a=2.00\\ \\mathrm{m/s^2},\\ T=18.0\\ \\mathrm{N}\\)"
+      },
+      {
+        "text": "\\(a=2.50\\ \\mathrm{m/s^2},\\ T=22.5\\ \\mathrm{N}\\)"
+      },
+      {
+        "text": "\\(a=3.00\\ \\mathrm{m/s^2},\\ T=24.0\\ \\mathrm{N}\\)"
+      },
+      {
+        "text": "\\(a=4.00\\ \\mathrm{m/s^2},\\ T=28.0\\ \\mathrm{N}\\)"
+      }
+    ],
+    "correct": 2,
+    "explanation": "Primero, calculamos la fuerza de fricción cinética sobre \\(m_1\\): \\(f_k = \\mu_k m_1 g = 0.20 \\times 5\\ \\mathrm{kg} \\times 10\\ \\mathrm{m/s^2} = 10\\ \\mathrm{N}\\). Para el bloque colgante \\(m_2\\), la Segunda Ley de Newton es \\(m_2 g - T = m_2 a\\). Para el bloque en la mesa \\(m_1\\), la ecuación es \\(T - f_k = m_1 a\\). Sumando ambas ecuaciones para eliminar la tensión \\(T\\): \\(m_2 g - f_k = (m_1 + m_2) a\\). Despejando la aceleración: \\(a = (m_2 g - f_k) / (m_1 + m_2) = (3\\ \\mathrm{kg} \\times 10\\ \\mathrm{m/s^2} - 10\\ \\mathrm{N}) / (5\\ \\mathrm{kg} + 3\\ \\mathrm{kg}) = (30\\ \\mathrm{N} - 10\\ \\mathrm{N}) / 8\\ \\mathrm{kg} = 20\\ \\mathrm{N} / 8\\ \\mathrm{kg} = 2.50\\ \\mathrm{m/s^2}\\). Ahora, sustituimos \\(a\\) en la ecuación para \\(m_1\\) para hallar la tensión: \\(T = m_1 a + f_k = 5\\ \\mathrm{kg} \\times 2.50\\ \\mathrm{m/s^2} + 10\\ \\mathrm{N} = 12.5\\ \\mathrm{N} + 10\\ \\mathrm{N} = 22.5\\ \\mathrm{N}\\).",
+    "hints": [
+      "¿Cuáles son las fuerzas que impulsan el sistema y las que se oponen al movimiento? Dibuja diagramas de cuerpo libre para cada bloque.",
+      "Plantea la Segunda Ley de Newton para cada bloque de forma independiente, considerando la tensión y la fricción. Luego, combina las ecuaciones para encontrar la aceleración del sistema.",
+      "Las ecuaciones de movimiento son: \n              \\(m_2 g - T = m_2 a\\)\n             y \n              \\(T - \\mu_k m_1 g = m_1 a\\)\n            . Suma las ecuaciones para obtener \n              \\(a = (m_2 g - \\mu_k m_1 g) / (m_1 + m_2)\\)\n            . Luego, usa una de las ecuaciones para hallar \n              \\(T\\)\n            ."
+    ],
+    "sourceFileName": "Text Input",
+    "originalQuestionNumber": "14",
+    "internalId": "q-1759084460771-0.6382739601160476",
+    "id": "q-ai-cat-1759084460771-1-5"
+  }
+];
+        const categories = [
+  {
+    "id": "ai-cat-1759084460771-0",
+    "title": "Fundamentos de Dinámica y Cinemática",
+    "description": "<p>Esta sección cubre los principios fundamentales de la dinámica y la cinemática, esenciales para entender cómo las fuerzas afectan el movimiento de los objetos. Aquí se exploran:</p><ul><li><strong>Leyes de Newton:</strong> Especialmente la Segunda Ley, que establece que la fuerza neta aplicada a un objeto es igual al producto de su masa por su aceleración (\n        \\(F_{\\text{neta}} = ma\\)\n      ).</li><li><strong>Fricción:</strong> La fuerza de fricción cinética (\n        \\(f_k = \\mu_k N\\)\n      ) que se opone al movimiento, donde \n        \\(\\mu_k\\)\n       es el coeficiente de fricción cinética y \n        \\(N\\)\n       es la fuerza normal.</li><li><strong>Sistemas de bloques:</strong> Cómo analizar la aceleración común de múltiples bloques conectados o empujados, considerando la masa total del sistema.</li><li><strong>Máquina de Atwood:</strong> Un caso especial de sistema de masas conectadas por una polea, donde la aceleración se calcula como \n        \\(a = \\frac{(m_2-m_1)g}{m_1+m_2}\\)\n      .</li><li><strong>Movimiento Uniformemente Acelerado (UAM):</strong> Ecuaciones clave como \n        \\(v = v_0 + at\\)\n      , \n        \\(\\Delta x = v_0 t + \\frac{1}{2}at^2\\)\n      y \n        \\(v^2 = v_0^2 + 2a\\Delta x\\)\n      , utilizadas para describir el movimiento con aceleración constante.</li></ul><p>Es crucial dominar estos conceptos básicos antes de abordar problemas más complejos en física.</p>",
+    "summaryKey": "ai-cat-1759084460771-0",
+    "problem_ids": [
+      "q-ai-cat-1759084460771-0-0",
+      "q-ai-cat-1759084460771-0-1",
+      "q-ai-cat-1759084460771-0-2",
+      "q-ai-cat-1759084460771-0-3",
+      "q-ai-cat-1759084460771-0-4",
+      "q-ai-cat-1759084460771-0-5",
+      "q-ai-cat-1759084460771-0-6",
+      "q-ai-cat-1759084460771-0-7"
+    ]
+  },
+  {
+    "id": "ai-cat-1759084460771-1",
+    "title": "Problemas Avanzados de Dinámica",
+    "description": "<p>Esta categoría profundiza en aplicaciones más complejas de las leyes de Newton y principios de conservación, abarcando escenarios que requieren un análisis más detallado de las interacciones y fuerzas internas en sistemas de cuerpos.</p><ul><li><strong>Sistemas de múltiples cuerpos:</strong> Cómo aplicar la Segunda Ley de Newton a sistemas de varios bloques conectados por cuerdas o en contacto, tanto en superficies lisas como con fricción. Esto implica considerar la aceleración del sistema como un todo y luego analizar las fuerzas internas (tensiones, fuerzas de contacto) en cada subsistema.</li><li><strong>Fuerzas internas:</strong> La Tercera Ley de Newton es fundamental para entender que las fuerzas de interacción entre cuerpos dentro de un sistema son iguales en magnitud y opuestas en dirección.</li><li><strong>Fricción estática máxima:</strong> Análisis de condiciones límite donde la fuerza de fricción estática alcanza su valor máximo antes de que un objeto empiece a deslizarse (\n        \\(f_{s,\\text{max}} = \\mu_s N\\)\n      ).</li><li><strong>Impulso y cantidad de movimiento:</strong> Aplicación del teorema del impulso y la cantidad de movimiento (\n        \\(J = \\Delta p = m\\Delta v\\)\n      ) y el principio de conservación de la cantidad de movimiento (\n        \\(P_{\\text{inicial}} = P_{\\text{final}}\\) para sistemas aislados). Estos conceptos son clave para problemas de colisiones, retroceso y empujes mutuos.</li><li><strong>Ascensores y poleas con fricción:</strong> Integración de la aceleración gravitacional y la fricción en sistemas con movimiento vertical y horizontal.</li></ul><p>La clave para resolver estos problemas es el dibujo de diagramas de cuerpo libre precisos y la aplicación sistemática de las leyes de Newton a cada componente del sistema.</p>",
+    "summaryKey": "ai-cat-1759084460771-1",
+    "problem_ids": [
+      "q-ai-cat-1759084460771-1-0",
+      "q-ai-cat-1759084460771-1-1",
+      "q-ai-cat-1759084460771-1-2",
+      "q-ai-cat-1759084460771-1-3",
+      "q-ai-cat-1759084460771-1-4",
+      "q-ai-cat-1759084460771-1-5"
+    ]
+  }
+];
+
+        const problemsById = {};
+        allProblemsData.forEach(p => { problemsById[p.id] = p; });
+        
+        let currentQuizProblems = [];
+        let currentCategory = null;
+        let completedCategories = JSON.parse(localStorage.getItem('completedQuizCategories')) || {};
+        let currentProblemIndex = 0;
+        let score = 0;
+        
+        const categorySelectionScreen = document.getElementById('category-selection-screen');
+        const categoryListEl = document.getElementById('category-list');
+        const overallProgressContainer = document.getElementById('overall-progress-container');
+        const overallScoreEl = document.getElementById('overall-score');
+        const showFinalResultsBtn = document.getElementById('show-final-results-btn');
+        const quizWrapperEl = document.getElementById('quiz-wrapper');
+        const summaryContainerEl = document.getElementById('summary-container');
+        const summaryContinueBtn = document.getElementById('summary-continue-btn');
+        const quizContainerEl = document.getElementById('quiz-container');
+        const headerEl = document.getElementById('problem-header');
+        const questionEl = document.getElementById('question-container');
+        const graphEl = document.getElementById('graph-container');
+        const optionsEl = document.getElementById('options-container');
+        const hintsEl = document.getElementById('hints-container');
+        const feedbackEl = document.getElementById('feedback-container');
+        const nextButton = document.getElementById('next-button');
+        const progressBar = document.getElementById('progress-bar');
+        const scoreCounterEl = document.getElementById('score-counter');
+        const finalScreenEl = document.getElementById('final-screen');
+        const backToMenuBtn = document.getElementById('back-to-menu-btn');
+
+        function renderCategoryScreen() {
+            categoryListEl.innerHTML = '';
+            let totalCompleted = 0;
+            let totalPossibleScore = 0;
+            let totalUserScore = 0;
+
+            categories.forEach(cat => {
+                const li = document.createElement('li');
+                li.className = 'category-item';
+                li.dataset.categoryId = cat.id;
+                
+                const catProgress = completedCategories[cat.id];
+                let progressHTML = '';
+                if(catProgress) {
+                    li.classList.add('completed');
+                    if (catProgress.total > 0) {
+                        progressHTML = `<div class="progress-info">Completado: ${catProgress.score}/${catProgress.total}</div>`;
+                    }
+                    totalCompleted++;
+                    totalUserScore += catProgress.score;
+                    totalPossibleScore += cat.problem_ids.length;
+                }
+
+                li.innerHTML = `<h3>${cat.title}</h3><p>${cat.description.replace(/<[^>]*>?/gm, '').substring(0, 100)}...</p>${progressHTML}`;
+                li.onclick = () => {
+                    if (!li.classList.contains('completed')) {
+                        startCategory(cat.id);
+                    }
+                };
+                categoryListEl.appendChild(li);
+            });
+
+            if (Object.keys(completedCategories).length > 0) {
+                overallProgressContainer.classList.remove('hidden');
+                overallScoreEl.textContent = `Puntaje total: ${totalUserScore} de ${totalPossibleScore} correctas. Secciones completadas: ${totalCompleted} de ${categories.length}.`;
+            } else {
+                 overallProgressContainer.classList.add('hidden');
+            }
+
+            if (totalCompleted === categories.length && categories.length > 0) {
+                showFinalResultsBtn.classList.remove('hidden');
+            } else {
+                showFinalResultsBtn.classList.add('hidden');
+            }
+
+            quizWrapperEl.classList.add('hidden');
+            categorySelectionScreen.classList.remove('hidden');
+        }
+
+        function startCategory(categoryId) {
+            currentCategory = categories.find(c => c.id === categoryId);
+            if (!currentCategory) return;
+            
+            categorySelectionScreen.classList.add('hidden');
+            quizWrapperEl.classList.remove('hidden');
+
+            currentQuizProblems = currentCategory.problem_ids.map(id => problemsById[id]);
+            currentProblemIndex = 0;
+            score = 0;
+            
+            showSummary(currentCategory.id);
+        }
+
+        function showSummary(summaryKey) {
+            const summary = summaries[summaryKey];
+            if (!summary) {
+                 summaryContinueBtn.onclick(); return;
+            }
+            
+            const summaryTitleEl = document.getElementById('summary-title');
+            const keyConceptsEl = document.getElementById('summary-key-concepts');
+            const tipsListEl = document.getElementById('summary-tips-list');
+    
+            summaryTitleEl.textContent = `Preparación para: ${summary.title}`;
+            keyConceptsEl.innerHTML = summary.key_concepts_html;
+            
+            tipsListEl.innerHTML = '';
+            summary.tips.forEach(tip => {
+                const li = document.createElement('li');
+                li.textContent = tip;
+                tipsListEl.appendChild(li);
+            });
+            
+            renderMath();
+            quizContainerEl.classList.add('hidden');
+            finalScreenEl.classList.add('hidden');
+            summaryContainerEl.classList.remove('hidden');
+        }
+
+        summaryContinueBtn.onclick = () => {
+            summaryContainerEl.classList.add('hidden');
+            if (currentQuizProblems && currentQuizProblems.length > 0) {
+                quizContainerEl.classList.remove('hidden');
+                renderProblem(currentProblemIndex);
+            } else {
+                endOfCategory();
+            }
+        };
+        
+        function renderProblem(index) {
+            optionsEl.innerHTML = '';
+            hintsEl.innerHTML = '';
+            feedbackEl.style.display = 'none';
+            nextButton.classList.remove('visible');
+            graphEl.innerHTML = '';
+            optionsEl.className = '';
+
+            const problem = currentQuizProblems[index];
+            if (!problem) {
+                console.error("Could not find problem for index:", index, "in category:", currentCategory.title);
+                questionEl.innerHTML = "Error: No se pudo cargar la pregunta. Verifique que los datos sean correctos.";
+                return;
+            }
+
+            headerEl.textContent = `Pregunta ${index + 1} de ${currentQuizProblems.length}`;
+            questionEl.innerHTML = problem.text;
+            progressBar.style.width = `${((index) / currentQuizProblems.length) * 100}%`;
+            scoreCounterEl.textContent = `✅ Puntos: ${score}`;
+            
+            if (problem.diagram) {
+                graphEl.style.display = 'block';
+                graphEl.innerHTML = renderDiagram(problem.diagram);
+            } else {
+                graphEl.style.display = 'none';
+            }
+            
+            const optionsHaveDiagrams = problem.options.some(opt => opt.diagram);
+
+            if (optionsHaveDiagrams) {
+                 optionsEl.className = 'options-grid-with-graphs';
+                 problem.options.forEach((opt, i) => createOptionBlock(opt, i));
+            } else {
+                 problem.options.forEach((opt, i) => createOptionButton(opt, i));
+            }
+
+            if (problem.hints && problem.hints.length > 0) {
+                problem.hints.forEach((hint, i) => {
+                    const button = document.createElement('button');
+                    button.className = 'hint-button';
+                    button.textContent = `💡 Revelar Pista ${i + 1}`;
+                    button.dataset.hintIndex = i;
+                    if (i > 0) {
+                        button.disabled = true;
+                    }
+                    button.onclick = (e) => {
+                        const clickedButton = e.currentTarget;
+                        const hintContent = document.createElement('div');
+                        hintContent.className = 'hint-content';
+                        hintContent.innerHTML = hint;
+                        clickedButton.replaceWith(hintContent);
+                        
+                        const nextHintButton = hintsEl.querySelector('.hint-button');
+                        if (nextHintButton) {
+                            nextHintButton.disabled = false;
+                        }
+                        renderMath();
+                    };
+                    hintsEl.appendChild(button);
+                });
+            }
+
+            renderMath();
+        }
+        
+        function createOptionButton(option, index) {
+            const button = document.createElement('button');
+            button.className = 'option-button';
+            button.dataset.index = index;
+            button.innerHTML = `<span class="label">${String.fromCharCode(65 + index)})</span> <span class="value">${option.text || ''}</span>`;
+            button.onclick = handleOptionClick;
+            optionsEl.appendChild(button);
+        }
+        
+        function createOptionBlock(option, index) {
+            const optionBlock = document.createElement('div');
+            optionBlock.className = 'option-block-graph';
+            optionBlock.dataset.index = index;
+            optionBlock.onclick = handleOptionClick;
+            let diagramHTML = option.diagram ? `<div class="option-graph-canvas-container">${renderDiagram(option.diagram)}</div>` : '';
+            optionBlock.innerHTML = `<div class="label">${String.fromCharCode(65 + index)}) ${option.text || ''}</div> ${diagramHTML}`;
+            optionsEl.appendChild(optionBlock);
+        }
+
+        function handleOptionClick(event) {
+            const problem = currentQuizProblems[currentProblemIndex];
+            const selectedIndex = parseInt(event.currentTarget.dataset.index, 10);
+            const correctIndex = problem.correct;
+            
+            const correctButton = document.querySelector(`[data-index="${correctIndex}"]`);
+            if (correctButton) correctButton.classList.add('correct');
+            
+            let isAnswerCorrect = false;
+            const selectedButton = event.currentTarget;
+            if (selectedIndex === correctIndex) {
+                score++;
+                isAnswerCorrect = true;
+            } else {
+                selectedButton.classList.add('incorrect');
+            }
+            
+            scoreCounterEl.textContent = `✅ Puntos: ${score}`;
+            document.querySelectorAll('.option-button, .option-block-graph').forEach(btn => { btn.classList.add('disabled'); btn.onclick = null; });
+            progressBar.style.width = `${((currentProblemIndex + 1) / currentQuizProblems.length) * 100}%`;
+            
+            feedbackEl.className = isAnswerCorrect ? 'feedback-container correct' : 'feedback-container incorrect';
+            const feedbackTitle = isAnswerCorrect ? `<div id="feedback-title">${icons.check} Correcto</div>` : `<div id="feedback-title">${icons.x} Incorrecto</div>`;
+            feedbackEl.innerHTML = `${feedbackTitle}${problem.explanation}`;
+            
+            renderMath();
+            feedbackEl.style.display = 'block';
+            if (currentProblemIndex < currentQuizProblems.length - 1) { nextButton.textContent = 'Siguiente →'; } 
+            else { nextButton.textContent = 'Finalizar Sección'; }
+            nextButton.classList.add('visible');
+        }
+
+        nextButton.onclick = () => {
+            currentProblemIndex++;
+            if (currentProblemIndex < currentQuizProblems.length) {
+                renderProblem(currentProblemIndex);
+            } else {
+                endOfCategory();
+            }
+        };
+        
+        function endOfCategory() {
+            completedCategories[currentCategory.id] = {
+                score: score,
+                total: currentQuizProblems.length
+            };
+            localStorage.setItem('completedQuizCategories', JSON.stringify(completedCategories));
+            
+            quizContainerEl.classList.add('hidden');
+            finalScreenEl.classList.remove('hidden');
+
+            const percentage = currentQuizProblems.length > 0 ? Math.round((score / currentQuizProblems.length) * 100) : 100;
+            document.getElementById('final-title').textContent = `Sección Completada: ${currentCategory.title}`;
+            document.getElementById('final-message').textContent = currentQuizProblems.length > 0 ? `¡Gran trabajo! Has completado esta sección.` : `¡Concepto explorado! Ahora puedes continuar con la siguiente sección.`;
+            document.getElementById('final-score').textContent = currentQuizProblems.length > 0 ? `${score} / ${currentQuizProblems.length}` : '✔';
+            const finalPercentageEl = document.getElementById('final-percentage');
+            if (currentQuizProblems.length > 0) {
+                finalPercentageEl.textContent = `(${percentage}%)`;
+                finalPercentageEl.style.color = percentage >= 60 ? 'var(--success-color)' : 'var(--danger-color)';
+            } else {
+                finalPercentageEl.textContent = '';
+            }
+            backToMenuBtn.textContent = 'Volver al Menú';
+            backToMenuBtn.onclick = () => {
+                finalScreenEl.classList.add('hidden');
+                renderCategoryScreen();
+            };
+        }
+        
+        showFinalResultsBtn.onclick = () => {
+            categorySelectionScreen.classList.add('hidden');
+            quizWrapperEl.classList.remove('hidden');
+
+            summaryContainerEl.classList.add('hidden');
+            quizContainerEl.classList.add('hidden');
+            finalScreenEl.classList.remove('hidden');
+
+            let totalScore = 0;
+            let totalProblems = 0;
+            Object.values(completedCategories).forEach(cat => {
+                totalScore += cat.score;
+                if (cat.total > 0) {
+                    totalProblems += cat.total;
+                }
+            });
+
+            const percentage = totalProblems > 0 ? Math.round((totalScore / totalProblems) * 100) : 0;
+            document.getElementById('final-title').textContent = '¡Resumen Final del Desafío!';
+            document.getElementById('final-message').textContent = '¡Felicidades! Has completado todos los temas. Este es tu rendimiento general.';
+            document.getElementById('final-score').textContent = `${totalScore} / ${totalProblems}`;
+            const finalPercentageEl = document.getElementById('final-percentage');
+            finalPercentageEl.textContent = `(${percentage}%)`;
+            finalPercentageEl.style.color = percentage >= 60 ? 'var(--success-color)' : 'var(--danger-color)';
+            
+            backToMenuBtn.textContent = 'Reiniciar Desafío';
+            backToMenuBtn.onclick = () => {
+                localStorage.removeItem('completedQuizCategories');
+                window.location.reload();
+            };
+        };
+        
+        renderCategoryScreen();
+        renderMath();
+    });
+    </script>
+</body>
+</html>
+  
